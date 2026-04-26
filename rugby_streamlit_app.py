@@ -175,12 +175,59 @@ def train_canada_model(stints, ratings_dict):
 def main():
     # Header
     st.markdown('<p class="main-header">Wheelchair Rugby Analysis: Canada Lineup Optimization</p>', unsafe_allow_html=True)
-    
+
     st.markdown("""
-    This application analyzes wheelchair rugby line-up data to optimize Team Canada's player combinations. 
-    We aim to find the best 4-player lineups (constrained by the 8.0 classification point limit) that 
+    This application analyzes wheelchair rugby line-up data to optimize Team Canada's player combinations.
+    We aim to find the best 4-player lineups (constrained by the 8.0 classification point limit) that
     maximize Goal Differential relative to opponents.
     """)
+
+    with st.expander("How to use this app", expanded=False):
+        st.markdown("""
+**What this app does in plain English.**
+In wheelchair rugby, every player has a "classification" number from
+0.5 to 3.5 based on disability level — and the **total** of the 4
+players on the court can't exceed **8.0 points**. So a really impactful
+3.5-point player squeezes out a 2.0-point teammate. The question:
+*which legal 4-player combinations actually win games together?*
+This app uses 7,448 historical stints (continuous on-court intervals)
+to estimate each player's individual contribution, then tries every
+legal lineup and ranks the top 10.
+
+**Quick start (60 seconds).**
+1. Use the **page selector** in the sidebar to navigate the analysis:
+    - **Overview & EDA** — what the data looks like.
+    - **Player Ratings** — each player's estimated impact, isolated
+      from teammates.
+    - **Lineup Optimizer** — the punchline. The top 10 best legal
+      4-player lineups.
+    - **Player Rankings** — sortable table of all players.
+2. On the Lineup Optimizer page, choose a venue (home/away).
+3. Read the top-10 lineups by predicted goal differential.
+
+**Why we can't just sum up player stats.**
+A player who's always on court with the team's best teammate looks
+better than they are. The app uses **regularised plus-minus regression**
+(Ridge / Lasso) to isolate each player's *individual* contribution —
+the part of the team's per-minute scoring that travels with that player
+even after removing the effect of the four teammates on court.
+
+**What "goals per minute" means.**
+The model predicts the team's net goal differential per minute on
+court. A typical good lineup might be +0.20 (i.e., scoring 0.2 goals
+more per minute than they concede). Multiply by stint length (~8 min)
+to get goals per stint.
+
+**Why regularisation matters.**
+Niche-role players have small samples. Without regularisation, their
+estimates would swing wildly. Ridge / Lasso pull noisy estimates
+toward zero, so only consistent contributors get high ratings.
+
+**Try this.** Compare the top 10 lineups against the most-played
+historical lineup. Often the model surfaces a combination Canada
+hasn't actually used much that's *projected* to outperform — those
+are the lineups worth experimenting with.
+""")
     
     # Load data
     stints, players = load_data()
