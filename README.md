@@ -1,5 +1,7 @@
 # Wheelchair Rugby Lineup Optimizer
 
+**[Live demo](https://wheelchair-rugby-lineup-optimizer.streamlit.app)** — runs in your browser, no install required.
+
 Data-driven lineup optimiser for **Team Canada Wheelchair Rugby**. Uses
 **regularised plus-minus** regression on **7,448 historical stint
 records** to isolate individual player contributions from team effects,
